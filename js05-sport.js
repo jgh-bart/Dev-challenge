@@ -37,14 +37,23 @@ function getFootballData(team) {
 		datatype: "text",
 		success: function (data) {
 			var allRows = data.split(/\r?\n|\r/);
-			var myTeamHasPlayed = false // set to true at first match involving my team
+			var leagueData = [];
+			var matchesPlayed = [];
+			var matchData;
 			var wins = 0
 			var teamsBeaten = new Set
 			// loop through rows of data, start from second row to exclude title row
 			var i;
 			for (i=1; i < allRows.length; i++) {
 				// parse match data by splitting CSV row
-				var matchData = allRows[i].split(",")
+				leagueData.push(allRows[i].split(","));
+			}
+			for (i=1; i < leagueData.length; i++) {
+				matchData = leagueData[i];
+				// add i to array of matches played
+				if (matchData[2] == myTeam || matchData[3] == myTeam) {
+					matchesPlayed.push(i);
+				}
 				// if a win for myTeam, add opponent to set of teams beaten
 				if (matchData[2] == myTeam && matchData[6] == "H") {
 					teamsBeaten.add(matchData[3]);
@@ -53,39 +62,12 @@ function getFootballData(team) {
 					teamsBeaten.add(matchData[2]);
 					wins += 1;
 				}
-				// construct homepage message about myTeam's latest match
-				if (!myTeamHasPlayed && (matchData[2] == myTeam || matchData[3] == myTeam)) {
-					console.log(matchData);
-					if (matchData[2] == myTeam) {
-						var opponent = matchData[3];
-						var myGoals  = matchData[4];
-						var oppGoals = matchData[5];
-						var homeOrAway = "at home";
-					} else if (matchData[3] == myTeam) {
-						var opponent = matchData[2];
-						var myGoals  = matchData[5];
-						var oppGoals = matchData[4];
-						var homeOrAway = "away";
-					}
-					var result;
-					if (myGoals > oppGoals) {
-						result = ["Win", "winning"];
-					} else if (myGoals < oppGoals) {
-						result = ["Loss", "losing"];
-					} else {
-						result = ["Draw", "drawing"];
-					}
-					homeSportHeaderVariable = `${result[0]} for ${myTeam}`;
-					homeSportTextVariable = `In their latest match on ${convertDate(matchData[1])}, ${myTeam} played ${opponent} ${homeOrAway}, ${result[1]} ${myGoals}&ndash;${oppGoals}.`;
-					myTeamHasPlayed = true;
-				}
 			}
 			// if myTeam hasn't played a match, alert and throw error
-			if (!myTeamHasPlayed) {
+			if (matchesPlayed.length == 0) {
 				alert(`"${myTeam}" is not a recognised Serie A team.`);
 				throw `INVALID DATE INPUT: ${myTeam}`;
 			}
-			console.log("TEAMS BEATEN:", teamsBeaten);
 			// create content of page 05-sport.html
 			if (wins == 0) {
 				$("#introTeamsBeaten").html(`${myTeam} have won no matches.`);
@@ -100,7 +82,30 @@ function getFootballData(team) {
 				teamsBeaten.forEach(function(team) {
 					$("#listTeamsBeaten").append($("<li></li>").text(team));
 				})
-			}	
+			}
+			// construct homepage message about myTeam's latest match
+			matchData = leagueData[matchesPlayed[matchesPlayed.length - 1]];
+			if (matchData[2] == myTeam) {
+				var opponent = matchData[3];
+				var myGoals  = matchData[4];
+				var oppGoals = matchData[5];
+				var homeOrAway = "at home";
+			} else if (matchData[3] == myTeam) {
+				var opponent = matchData[2];
+				var myGoals  = matchData[5];
+				var oppGoals = matchData[4];
+				var homeOrAway = "away";
+			}
+			var result;
+			if (myGoals > oppGoals) {
+				result = ["Win", "winning"];
+			} else if (myGoals < oppGoals) {
+				result = ["Loss", "losing"];
+			} else {
+				result = ["Draw", "drawing"];
+			}
+			homeSportHeaderVariable = `${result[0]} for ${myTeam}`;
+			homeSportTextVariable = `In their latest match on ${convertDate(matchData[1])}, ${myTeam} played ${opponent} ${homeOrAway}, ${result[1]} ${myGoals}&ndash;${oppGoals}.`;
 		},
 		error: function (error) {
 			console.log(error);
