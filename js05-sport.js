@@ -66,7 +66,7 @@ function getFootballData(team) {
 			// if myTeam hasn't played a match, alert and throw error
 			if (matchesPlayed.length == 0) {
 				alert(`"${myTeam}" is not a recognised Serie A team.`);
-				throw `INVALID DATE INPUT: ${myTeam}`;
+				throw `INVALID TEAM INPUT: ${myTeam}`;
 			}
 			// create content of page 05-sport.html
 			if (wins == 0) {
