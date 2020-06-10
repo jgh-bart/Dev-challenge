@@ -1,0 +1,15 @@
+<nav class="devNavbar">
+	<button class="devNavButton" alt="Homepage" onclick="loadContent('p02-homepage.html');">HOMEPAGE</button>
+	<button class="devNavButton" alt="Log out" onclick="loadContent('p01-frontpage.html');">LOG OUT</button>
+</nav>
+<h1 class="white">Tasks</h1>
+<div style="padding-left: 10%; padding-right: 10%;">
+	<div id="tasksList"></div>
+	<img id="addTaskButton"
+		 class="pointer"
+		 src="Assets/Plus_button_small.png"
+		 alt="Add a task line"
+		 width=30px
+		 onclick="buttonAddTask();"/>
+</div>
+<script src="js07-tasks.js"></script>

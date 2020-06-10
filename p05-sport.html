@@ -1,0 +1,14 @@
+<nav class="devNavbar">
+	<button class="devNavButton" alt="Homepage" onclick="loadContent('p02-homepage.html');">HOMEPAGE</button>
+	<button class="devNavButton" alt="Log out" onclick="loadContent('p01-frontpage.html');">LOG OUT</button>
+</nav>
+<h1 class="white">Champions League Challenge</h1>
+<form class="text-center">
+	<label class="gold">Set my team:</label>
+	<input type="text" id="myNewTeam">
+	<button type="button" id="enterButton" onclick="enterMyTeam()">Enter</button>
+</form>
+<!-- Data supplied by js05-sport.js -->
+<p id="introTeamsBeaten" class="devBodyText"></p>
+<ul id="listTeamsBeaten" class="devBodyText overflow-autoscroll"></ul>
+<script src="js05-sport.js"></script>

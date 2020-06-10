@@ -1,0 +1,78 @@
+<nav class="devNavbar">
+	<button class="devNavButton" alt="Log out" onclick="loadContent('p01-frontpage.html');">LOG OUT</button>
+</nav>
+<!-- welcome message (text defined by JavaScipt) -->
+<h1 id="welcome" class="white text-center"></h1>
+<!-- app icons -->
+<div class="cards cardHolder">
+	<!-- Weather -->
+	<div class="card homepage-icon">
+		<h5 class="card-header homepage-icon-header">
+			Weather
+		</h5>
+		<div class="card-body black">
+			<div class="text-center">
+				<img id="weather-icon"/>
+				<span><span id="weather-temp"></span>&deg;C</span>
+			</div>	
+			<p id="weather-city" class="text-center"></p>
+		</div>
+	</div>
+	<!-- News -->
+	<div class="card homepage-icon pointer" onclick="loadContent('p04-news.html');">
+		<h5 class="card-header homepage-icon-header icon-link">
+			News
+		</h5>
+		<div class="card-body black" style="padding: 0.8em; margin: 0 auto;">
+			<h6 class="text-center">Latest from NY Times</h6>
+			<p id="homeNewsHeadline" class="homepage-body-text"></p>
+		</div>
+	</div>
+	<!-- Sport -->
+	<div class="card homepage-icon pointer" onclick="loadContent('p05-sport.html');">
+		<h5 class="card-header homepage-icon-header icon-link">
+			Sport
+		</h5>
+		<div class="card-body black" style="padding: 0.8em; margin: 0 auto;">
+			<h6 id="homeSportHeader" class="text-center">Follow a Serie A team</h6>
+			<p id="homeSportText" class="homepage-body-text"></p>
+		</div>
+		<script type="text/javascript">
+			if (homeSportHeaderVariable && homeSportTextVariable) {
+				$("#homeSportHeader").html(homeSportHeaderVariable);
+				$("#homeSportText").html(homeSportTextVariable);
+			}
+		</script>
+	</div>
+	<!-- Photos -->
+	<div class="card homepage-icon pointer" onclick="loadContent('p06-photos.html');">
+		<h5 class="card-header homepage-icon-header icon-link">
+			Photos
+		</h5>
+		<div class="card-body black">
+		</div>
+	</div>
+	<!-- Tasks -->
+	<div class="card homepage-icon pointer" onclick="loadContent('p07-tasks.html');">
+		<h5 class="card-header homepage-icon-header icon-link">
+			Tasks
+		</h5>
+		<div class="card-body black">
+		</div>
+	</div>
+	<!-- Clothes -->
+	<div class="card homepage-icon"">
+		<h5 class="card-header homepage-icon-header">
+			Clothes
+		</h5>
+		<div class="card-body" style="padding: 0;">
+			<div id="clothesPiechart" class="centre-img" style="margin: 0 auto;"></div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	$("#welcome").html(`Good day, ${username}`);
+</script>
+<script src="js03-weather.js"></script>
+<script src="js04-news.js"></script>
+<script src="js08-clothes.js"></script>
