@@ -1,4 +1,4 @@
-// function for button to add a new task line
+// function to add a new task line
 function addTask() {
 	var newDiv = document.createElement("div");
 	var i = $("#tasksList").children().length + 1;
@@ -7,7 +7,7 @@ function addTask() {
 	$("#tasksList").append(newDiv);
 }
 
-// function for button to add a new task line
+// function for button to add a new task line (calls function above)
 function buttonAddTask() {
 	if(confirm("Do you want to add a line for a new task?")) {
 		addTask();
