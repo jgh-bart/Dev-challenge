@@ -86,7 +86,7 @@
 		confirmPassword = $("#confirmPasswordInput").val()
 		if (username.length < 5 || password.length < 5) {
 			alert("Your username as password must both be a minimum of 5 characters.");
-		} else if (email.match(/.+@.+\.[a-z]+(\.[a-z]{2})?/)) {
+		} else if (!email.match(/.+@.+\.[a-z]+(\.[a-z]{2})?/)) {
 			alert("This email address is not valid.");
 		} else if (password != confirmPassword) {
 			alert("Please enter the same password twice.");
@@ -111,6 +111,7 @@
 		loadContent("p02-homepage.html");
 	}
 	// function to query MySQL database (via PHP)
+	/*
 	function accessMySQL(query) {
 		$.ajax({
 			url: "querySQL.php",
@@ -125,4 +126,5 @@
 			}
 		})
 	}
+	*/
 </script>
