@@ -30,6 +30,9 @@ app.get("/:page", function(req, res) {
 		if (1 == 2) {
 			// when login is implemented, pages will redirect to login page if no user is logged in
 			res.redirect(403, __dirname + "/");
+		} else if (req.params.page == "06-photos") {
+			// Experiment with Jade
+			res.render("06-photos");
 		} else {
 			res.sendFile(__dirname + "/" + req.params.page + ".html");
 		}
