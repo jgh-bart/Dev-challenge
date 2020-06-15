@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Dev Challenge: Sport</title>
+		<meta charset="utf-8"/>
+		<!-- JQuery -->
+		<script src="http://code.jquery.com/jquery-3.5.1.min.js"></script>
+		<!-- CSS: Bootstrap & my stylesheet devchallenge-styles.css -->
+		<link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous"/>
+		<link rel="stylesheet" type="text/css" href="Assets/devchallenge-styles.css"/>
+	</head>
+	<body>
+		<nav class="devNavbar">
+			<a href="/02-homepage" class="devNavButton" alt="Homepage">HOMEPAGE</a>
+			<a href="/login" class="devNavButton" alt="Log out">LOG OUT</a>
+		</nav>
+		<h1 class="white">Champions League Challenge</h1>
+		<form class="text-center">
+			<label class="gold">Set my team:</label>
+			<input type="text" id="myNewTeam">
+			<button type="button" id="enterButton" onclick="enterMyTeam()">Enter</button>
+		</form>
+		<!-- Data supplied by js05-sport.js -->
+		<p id="introTeamsBeaten" class="devBodyText"></p>
+		<ul id="listTeamsBeaten" class="devBodyText overflow-autoscroll"></ul>
+		<script src="Code/js05-sport.js"></script>
+	</body>
+</html>	
