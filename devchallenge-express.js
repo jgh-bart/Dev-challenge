@@ -1,6 +1,7 @@
 var express      = require("express");
 var bodyParser   = require("body-parser");
-var formidable   = require('formidable');
+var formidable   = require("formidable");
+var fs           = require("fs")
 var imgFunctions = require("./Code/js06-photos.js");
 
 var app = express();
@@ -31,9 +32,25 @@ app.get("/:page", function(req, res) {
 			// when login is implemented, pages will redirect to login page if no user is logged in
 			res.redirect(403, __dirname + "/");
 		} else if (req.params.page == "06-photos") {
-			// Experiment with Jade
-			res.render("06-photos");
+			// Experiment with Jade for photo page
+			var imagesToDisplay = {};
+			var i = 1;
+			// create Jade string for each photo, add to imagesToDisplay object
+			fs.readdir(__dirname + "/Images/", function(err, files) {
+				if (err) throw err;
+				files.forEach(function(file) {
+					imagesToDisplay["photo" + i] = "img(class='centre-img' src='Images/" + file + "' width=280px)";
+					i += 1;
+				});
+				if (i <= 6) {
+					// the plus-sign image in the first available slot will hold the click function to add a photo
+					imagesToDisplay["photo" + i] = "img(class='centre-img pointer' src='Assets/Plus_button.png' alt='Add photo' width=100px)"
+				}
+				console.log(imagesToDisplay);
+			});
+			res.render("06-photos", imagesToDisplay);
 		} else {
+			// all other pages shown from HTML file
 			res.sendFile(__dirname + "/" + req.params.page + ".html");
 		}
 	} else {
