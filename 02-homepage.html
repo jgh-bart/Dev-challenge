@@ -13,7 +13,7 @@
 	</head>
 	<body>
 		<nav class="devNavbar">
-			<a href="/login" class="devNavButton" alt="Log out">LOG OUT</a>
+			<a href="/logout" class="devNavButton" alt="Log out">LOG OUT</a>
 		</nav>
 		<!-- welcome message (text defined by JavaScipt) -->
 		<h1 id="welcome" class="white text-center"></h1>
@@ -53,12 +53,6 @@
 					<p id="homeSportText" class="homepage-body-text"></p>
 				</div>
 				<a href="/05-sport" class="stretched-link"></a>
-				<script type="text/javascript">
-					if (homeSportHeaderVariable && homeSportTextVariable) {
-						$("#homeSportHeader").html(homeSportHeaderVariable);
-						$("#homeSportText").html(homeSportTextVariable);
-					}
-				</script>
 			</div>
 			<!-- Photos -->
 			<div class="card homepage-icon pointer">
@@ -89,10 +83,17 @@
 			</div>
 		</div>
 		<script type="text/javascript">
-			$("#welcome").html(`Good day, ${username}`);
+			// retrieve user object from server session data
+			$.ajax({
+				url: "/getUser",
+				complete: function(data) {
+					$("#welcome").html(`Good day, ${data.responseJSON.username}`);
+				}
+			});
 		</script>
 		<script src="Code/js03-weather.js"></script>
 		<script src="Code/js04-news.js"></script>
+		<script src="Code/js05-sport.js"></script>
 		<script src="Code/js08-clothes.js"></script>
 	</body>
 </html>	

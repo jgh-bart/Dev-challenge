@@ -4,7 +4,7 @@ body {
 }
 @media (min-width: 900px) {
 	body {
-		background-image: url("Assets/Background.png");
+		background-image: url("Background.png");
 		height: 500px;
 		background-position: center;
 		background-repeat: no-repeat;

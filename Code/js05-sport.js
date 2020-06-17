@@ -1,13 +1,24 @@
-// page starter: load content if team already selected
-if (myTeam) {
-	getFootballData(myTeam);
-}
+// page starter: retrieve team from session data, load content if team already set
+$.ajax({
+	url: "/getUser",
+	complete: function(data) {
+		var myTeam = data.responseJSON.leagueTeam;
+		if (myTeam) {
+			getFootballData(myTeam);
+		}
+	}
+});
 
 // function for enter button
 function enterMyTeam() {
-	if ($("#myNewTeam").val().length != 0) {
-		console.log("NEW TEAM", $("#myNewTeam").val());
-		getFootballData($("#myNewTeam").val());
+	var leagueTeam = $("#myNewTeam").val();
+	if (leagueTeam.length != 0) {
+		console.log("NEW TEAM", leagueTeam);
+		// send new team to /setUser route
+		$.ajax({
+			url: `/setUser?leagueTeam=${leagueTeam}`,
+		});
+		getFootballData(leagueTeam);
 	} else {
 		alert("No team has been entered.");
 	}
@@ -22,10 +33,6 @@ $("#myNewTeam").keypress(function() {
 	}
 });
 
-// variables to pass to Homepage
-var myTeam;
-var homeSportHeaderVariable;
-var homeSportTextVariable;
 // function to access Serie A data
 function getFootballData(team) {
 	// correct case of myTeam
@@ -104,8 +111,8 @@ function getFootballData(team) {
 			} else {
 				result = ["Draw", "drawing"];
 			}
-			homeSportHeaderVariable = `${result[0]} for ${myTeam}`;
-			homeSportTextVariable = `In their latest match on ${convertDate(matchData[1])}, ${myTeam} played ${opponent} ${homeOrAway}, ${result[1]} ${myGoals}&ndash;${oppGoals}.`;
+			$("#homeSportHeader").html(`${result[0]} for ${myTeam}`);
+			$("#homeSportText").html(`In their latest match on ${convertDate(matchData[1])}, ${myTeam} played ${opponent} ${homeOrAway}, ${result[1]} ${myGoals}&ndash;${oppGoals}.`);
 		},
 		error: function (error) {
 			console.log(error);
