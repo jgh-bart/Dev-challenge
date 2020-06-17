@@ -3,7 +3,7 @@ var session      = require("express-session");
 var formidable   = require("formidable");
 var fs           = require("fs")
 var MongoClient  = require("mongodb").MongoClient;
-var imgFunctions = require("./Code/js06-photos.js");
+var imgFunctions = require("./Code/imgFunctions.js");
 
 var app = express();
 app.use(express.json());       // to support JSON-encoded bodies
@@ -17,9 +17,10 @@ app.use(session({
 // set view engine
 app.set("view engine", "jade");
 
-// access assets and code
+// access assets, code, and user images
 app.use("/Assets", express.static("Assets"));
 app.use("/Code", express.static("Code"));
+app.use("/Images", express.static("Images"));
 
 // MongoDB connection
 var mongodbURL = "mongodb+srv://JGHB:devchallenge123@cluster0-pzgen.gcp.mongodb.net/dev-challenge-db?retryWrites=true&w=majority"
@@ -54,11 +55,15 @@ async function queryMongoDB(req, res, queryType, queryArguments) {
 				// count entries matching username or email in database
 				var resultCount = await client.db("dev-challenge-db").collection("dc-users").countDocuments({$or: [{username: username}, {email: email}]});
 				if (await resultCount == 0) {
-					// Add user
+					// add user
 					var user = {username: username, password: password, email: email, leagueTeam: null, tasks: {}}
 					await client.db("dev-challenge-db").collection("dc-users").insertOne(user);
 					console.log("User added:", user.username);
 					loginSession(req, res, user);
+					// create image folder for user, named username
+					fs.mkdir(__dirname + "/Images/" + user.username, function(err) {
+						if (err) throw err;
+					});
 				} else {
 					console.log("Username or email already registered");
 					// redirect unsuccessful registration to login page
@@ -152,10 +157,10 @@ app.get("/:page", function(req, res) {
 			var imagesToDisplay = {};
 			var i = 1;
 			// create Jade string for each photo, add to imagesToDisplay object
-			fs.readdir(__dirname + "/Images/", function(err, files) {
+			fs.readdir(__dirname + "/Images/" + req.session.user.username + "/", function(err, files) {
 				if (err) throw err;
 				files.forEach(function(file) {
-					imagesToDisplay["photo" + i] = "img.centre-img(src='Images/" + file + "', width='280px')";
+					imagesToDisplay["photo" + i] = "img.centre-img(src='Images/" + req.session.user.username + "/" + file + "', width='280px')";
 					i += 1;
 				});
 				if (i <= 6) {
