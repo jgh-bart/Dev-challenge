@@ -53,8 +53,14 @@ async function queryMongoDB(req, res, queryType, queryArguments) {
 				// count entries matching username or email in database
 				var resultCount = await client.db("dev-challenge-db").collection("dc-users").countDocuments({$or: [{username: username}, {email: email}]});
 				if (await resultCount == 0) {
+					// set up array of tasks, initially 7
+					var tasksArray = [];
+					var i;
+					for (i = 1; i <= 7; i++) {
+						tasksArray.push({"task": "", "tick": false});
+					}
 					// add user
-					var user = {username: username, password: password, email: email, leagueTeam: null, tasks: {}}
+					var user = {username: username, password: password, email: email, leagueTeam: null, tasks: tasksArray};
 					await client.db("dev-challenge-db").collection("dc-users").insertOne(user);
 					console.log("User added:", user.username);
 					loginSession(req, res, user);
@@ -132,11 +138,25 @@ app.get("/getUser", function(req, res) {
 // route to amend user object in session data and MongoDB
 app.get("/setUser", function(req, res) {
 	console.log("Set data:", req.query);
-	// set MongoDB
-	queryMongoDB(req, res, "setData", req.query);
 	// set session data
 	for (var [key, value] of Object.entries(req.query)) {
-		req.session.user[key] = value;
+		var parsedValue = parseIfJsonOrBoolean(value);
+		// set MongoDB
+		var query = {};
+		query[key] = parsedValue;
+		queryMongoDB(req, res, "setData", query);
+		// set session data
+		if (key.includes(".")) {
+			// to handle nested queries in dot notation
+			var splitKey = key.split(".");
+			if (splitKey.length == 2) {
+				req.session.user[splitKey[0]][splitKey[1]] = parsedValue;
+			} else if (splitKey.length == 3) {
+				req.session.user[splitKey[0]][splitKey[1]][splitKey[2]] = parsedValue;
+			}
+		} else {
+			req.session.user[key] = parsedValue;
+		}
 		req.session.save(function(err) {
 			if (err) throw err;
 		});
@@ -181,3 +201,14 @@ app.get("/:page", function(req, res) {
 app.listen(3000, function() {
 	console.log("Listening on port 3000");
 });
+
+// function which takes a string and returns JSON for {}, or Boolean for Boolean string, otherwise string
+function parseIfJsonOrBoolean(inputString) {
+	if (inputString[0] == "{" && inputString[inputString.length - 1] == "}") {
+			return JSON.parse(inputString);
+		} else if (inputString == "true" || inputString == "false") {
+			return (inputString == "true");
+		} else {
+			return inputString;
+		}
+}
