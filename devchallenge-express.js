@@ -1,6 +1,6 @@
 var express      = require("express");
 var session      = require("express-session");
-var formidable   = require("formidable");
+var fileDialog   = require("file-dialog");
 var fs           = require("fs")
 var MongoClient  = require("mongodb").MongoClient;
 var imgFunctions = require("./Code/imgFunctions.js");
@@ -14,8 +14,6 @@ app.use(session({
 	resave: true,
 	saveUninitialized: true
 }));
-// set view engine
-app.set("view engine", "jade");
 
 // access assets, code, and user images
 app.use("/Assets", express.static("Assets"));
@@ -144,6 +142,25 @@ app.get("/setUser", function(req, res) {
 		});
 	}
 });
+// route to retrieve user images from Images/username (username retrieved from session data)
+app.get("/getPhotos", function(req, res) {
+	var directoryPath = __dirname + "/Images/" + req.session.user.username;
+	fs.readdir(directoryPath, function(err, files) {
+		if (err) throw err;
+		var filesToSend = [];
+		files.forEach(function(file) {
+			filesToSend.push(req.session.user.username + "/" + file);
+		});
+		res.json({"files": filesToSend});
+	});
+});
+// route to upload user image
+app.get("/uploadPhoto", function(req, res) {
+	fileDialog({ accept: 'image/*' }).then(function(file) {
+		console.log(file[0]);
+		//imgFunctions.uploadImage(file[0], "Images/" + req.session.user.username + file[0]);
+	});
+});
 
 // other pages
 app.get("/:page", function(req, res) {
@@ -152,26 +169,8 @@ app.get("/:page", function(req, res) {
 			// redirect to login page if no user is logged in
 			console.log("Page inaccessible: not logged in")
 			res.redirect("/");
-		} else if (req.params.page == "06-photos") {
-			// Experiment with Jade for photo page
-			var imagesToDisplay = {};
-			var i = 1;
-			// create Jade string for each photo, add to imagesToDisplay object
-			fs.readdir(__dirname + "/Images/" + req.session.user.username + "/", function(err, files) {
-				if (err) throw err;
-				files.forEach(function(file) {
-					imagesToDisplay["photo" + i] = "img.centre-img(src='Images/" + req.session.user.username + "/" + file + "', width='280px')";
-					i += 1;
-				});
-				if (i <= 6) {
-					// the plus-sign image in the first available slot will hold the click function to add a photo
-					imagesToDisplay["photo" + i] = "img.centre-img.pointer(src='Assets/Plus_button.png', alt='Add photo', width='100px')"
-				}
-				console.log(imagesToDisplay);
-			});
-			res.render("06-photos", imagesToDisplay);
 		} else {
-			// all other pages shown from HTML file
+			// send HTML file
 			res.sendFile(__dirname + "/" + req.params.page + ".html");
 		}
 	} else {

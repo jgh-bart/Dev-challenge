@@ -11,8 +11,7 @@
   "dependencies": {
     "express": "^4.17.1",
     "express-session": "^1.17.1",
-    "formidable": "^1.2.2",
-    "jade": "^1.11.0",
+    "file-dialog": "0.0.8",
     "mongodb": "^3.5.9",
     "save": "^2.4.0"
   }

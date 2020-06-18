@@ -1,3 +1,12 @@
+// page starter: retrieve team from session data, load content if team already set
+$.ajax({
+	url: "/getUser",
+	complete: function(data) {
+		var tasks = data.responseJSON.tasks;
+		console.log('TASKS', tasks);
+	}
+});
+
 // function for button to add a new task line
 function addTask() {
 	var newDiv = document.createElement("div");

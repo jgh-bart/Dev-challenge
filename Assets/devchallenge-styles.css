@@ -140,6 +140,15 @@ body {
 	height: 10rem;
 }
 
+.page-photo {
+	display: block;
+	margin: auto;
+	max-height: 150px;
+    max-width: 120px;
+    height: auto;
+    width: auto;
+}
+
 /* CSS for 07-tasks */
 .task-text {
 	background-color: transparent;
