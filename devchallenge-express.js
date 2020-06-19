@@ -56,7 +56,7 @@ async function queryMongoDB(req, res, queryType, queryArguments) {
 					// set up array of tasks, initially 7
 					var tasksArray = [];
 					var i;
-					for (i = 1; i <= 7; i++) {
+					for (i = 0; i < 7; i++) {
 						tasksArray.push({"task": "", "tick": false});
 					}
 					// add user
@@ -92,12 +92,8 @@ function loginSession(req, res, user) {
 	res.redirect("/02-homepage"); //redirect to homepage
 }
 
-// login page
-app.get(["/", "/login"], function(req, res) {
-	res.sendFile(__dirname + "/01-frontpage.html");
-});
-// to log in
-app.post("/loginHomepage", function(req, res) {
+// route to log in
+app.post("/login", function(req, res) {
 	username = req.body.username;
 	password = req.body.password;
 	if (username && password) {
@@ -107,8 +103,8 @@ app.post("/loginHomepage", function(req, res) {
 		res.redirect("/");
 	}
 });
-// to register
-app.post("/registerHomepage", function(req, res) {
+// route to register
+app.post("/register", function(req, res) {
 	username  = req.body.username;
 	email     = req.body.email;
 	password1 = req.body.password;
@@ -123,7 +119,7 @@ app.post("/registerHomepage", function(req, res) {
 		queryMongoDB(req, res, "register", {username: username, password: password1, email: email});
 	}
 });
-// to log out
+// route to log out
 app.get("/logout", function(req, res) {
 	console.log("Logging out");
 	req.session.destroy(function(err) {
@@ -169,19 +165,50 @@ app.get("/getPhotos", function(req, res) {
 		if (err) throw err;
 		var filesToSend = [];
 		files.forEach(function(file) {
-			filesToSend.push(req.session.user.username + "/" + file);
+			filesToSend.push("Images/" + req.session.user.username + "/" + file);
 		});
 		res.json({"files": filesToSend});
 	});
 });
 // route to upload user image
 app.get("/uploadPhoto", function(req, res) {
-	fileDialog({ accept: 'image/*' }).then(function(file) {
-		console.log(file[0]);
+	console.log('UPLOAD');
+	//fileDialog({ accept: 'image/*' }).then(function(file) {
+		//console.log(file[0]);
 		//imgFunctions.uploadImage(file[0], "Images/" + req.session.user.username + file[0]);
+	//});
+});
+// route to delete user image
+app.get("/deletePhoto", function(req, res) {
+	var fileToDelete = req.query.id;
+	var directoryPath = __dirname + "/Images/" + req.session.user.username;
+	// promise to delete photo
+	var deletePromise = new Promise(function(resolve, reject) {
+		// get list of files in directory, identify file to delete by index
+ 		fs.readdir(directoryPath, function(err, files) {
+			if (err) reject (err);
+			var fileToDelete = directoryPath  + "/" + files[parseInt(req.query.id) - 1];
+			// delete file
+			fs.unlink(fileToDelete, function(err) {
+				if (err) {
+					reject(err);
+				} else {
+					console.log("File deleted:", fileToDelete);
+					resolve();
+				}
+			});
+		});
+	});
+	// send response after promise fulfilled
+	deletePromise.then(function() {
+		res.end();
 	});
 });
 
+// login page
+app.get("/", function(req, res) {
+	res.sendFile(__dirname + "/01-frontpage.html");
+});
 // other pages
 app.get("/:page", function(req, res) {
 	if (["02-homepage", "04-news", "05-sport", "06-photos", "07-tasks"].includes(req.params.page)) {

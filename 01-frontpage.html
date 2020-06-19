@@ -17,7 +17,7 @@
 		<!-- text input form to sign in [hidden by signUp()]-->
 		<div id="signInDisplay" class="text-center" style="display: block;">
 			<div class="login-form">
-				<form action="/loginHomepage" method="POST">
+				<form action="/login" method="POST">
 					<input type="text" name="username" class="frontpageInputField" placeholder="Username" required>
 					<input type="password" name="password" class="frontpageInputField" placeholder="Password" required>
 					<div class="text-center" style="position: absolute; bottom: 70px; width: 100%;">
@@ -30,7 +30,7 @@
 		<!-- text input form to register [hidden by signIn()]-->
 		<div id="signUpDisplay" class="text-center" style="display: none;">
 			<div class="login-form">
-				<form action="/registerHomepage" method="POST">
+				<form action="/register" method="POST">
 					<div>
 						<input type="text" name="username" class="frontpageInputField" placeholder="Username" required>
 						<input type="email" name="email" class="frontpageInputField" placeholder="Email" required>
