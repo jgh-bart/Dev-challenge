@@ -3,7 +3,6 @@ var session      = require("express-session");
 var formidable   = require("formidable");
 var fs           = require("fs")
 var MongoClient  = require("mongodb").MongoClient;
-var imgFunctions = require("./Code/imgFunctions.js");
 
 var app = express();
 app.use(express.json());       // to support JSON-encoded bodies
