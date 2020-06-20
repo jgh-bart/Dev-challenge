@@ -9,18 +9,34 @@ $.ajax({
 	}
 });
 
+// list of all teams
+var allTeams = ["Verona", "Napoli", "Atalanta", "Roma", "Bologna", "Torino", "Crotone", "Milan", "Inter", "Fiorentina", 
+                "Lazio", "Spal", "Sampdoria", "Benevento", "Sassuolo", "Genoa", "Udinese", "Chievo", "Juventus", "Cagliari"];
+
 // function for enter button
 function enterMyTeam() {
-	var leagueTeam = $("#myNewTeam").val();
-	if (leagueTeam.length != 0) {
-		console.log("NEW TEAM", leagueTeam);
-		// send new team to /setUser route
-		$.ajax({
-			url: `/setUser?leagueTeam=${leagueTeam}`,
-		});
-		getFootballData(leagueTeam);
-	} else {
+	var myTeam = $("#myNewTeam").val();
+	if (myTeam.trim().length == 0) {
 		alert("No team has been entered.");
+	} else {
+		// convert dots (A.C.) to spaces (A C), trim whitespace, capitalise first letter of each word
+		myTeam = myTeam.replace(/\./g, " ").trim().split(/ +/).map(word => word[0].toUpperCase() + word.slice(1).toLowerCase()).join(" ");
+		// variant names of Inter Milan and A.C. Milan
+		if (["Inter", "Inter Milan", "Inter Milano", "Internazionale Milano", "Internazionale"].includes(myTeam)) {
+			myTeam = "Inter";
+		} else if (["Milan", "Ac", "A C", "Ac Milan", "A C Milan", "Associazione Calcio Milan"].includes(myTeam)) {
+			myTeam = "Milan";
+		}
+		if (! allTeams.includes(myTeam)) {
+			alert(`${myTeam} is not a recognised Serie A team.`);
+		} else {
+			// send new team to /setUser route
+			$.ajax({
+				url: `/setUser?leagueTeam=${myTeam}`,
+			});
+			console.log("NEW TEAM", myTeam);
+			getFootballData(myTeam);
+		}
 	}
 }
 
@@ -34,9 +50,7 @@ $("#myNewTeam").keypress(function() {
 });
 
 // function to access Serie A data
-function getFootballData(team) {
-	// correct case of myTeam
-	myTeam = team[0].toUpperCase() + team.slice(1).toLowerCase();
+function getFootballData(myTeam) {
 	// load data
 	$.ajax({
 		url: "Assets/I1.csv",
@@ -47,8 +61,8 @@ function getFootballData(team) {
 			var leagueData = [];
 			var matchesPlayed = [];
 			var matchData;
-			var wins = 0
-			var teamsBeaten = new Set
+			var wins = 0;
+			var teamsBeaten = new Set;
 			// loop through rows of data, start from second row to exclude title row
 			var i;
 			for (i=1; i < allRows.length; i++) {
@@ -72,22 +86,22 @@ function getFootballData(team) {
 			}
 			// if myTeam hasn't played a match, alert and throw error
 			if (matchesPlayed.length == 0) {
-				alert(`"${myTeam}" is not a recognised Serie A team.`);
-				throw `INVALID TEAM INPUT: ${myTeam}`;
+				alert(`"${myTeam}" have played no matches.`);
+				throw `NO MATCHES: ${myTeam}`;
 			}
 			// create content of page 05-sport.html
 			if (wins == 0) {
-				$("#introTeamsBeaten").html(`${myTeam} have won no matches.`);
+				$("#introTeamsBeaten").html(`${displayName(myTeam)} have won no matches.`);
 				$("#listTeamsBeaten").empty();
 			} else {
 				if (wins == 1) {
-					$("#introTeamsBeaten").html(`${myTeam} have won one match, beating this team:`);
+					$("#introTeamsBeaten").html(`${displayName(myTeam)} have won one match, beating this team:`);
 				} else {
-					$("#introTeamsBeaten").html(`${myTeam} have won ${wins} matches, beating these teams:`)
+					$("#introTeamsBeaten").html(`${displayName(myTeam)} have won ${wins} matches, beating these teams:`)
 				}
 				$("#listTeamsBeaten").empty();
 				teamsBeaten.forEach(function(team) {
-					$("#listTeamsBeaten").append($("<li></li>").text(team));
+					$("#listTeamsBeaten").append($("<li></li>").text(displayName(team)));
 				})
 			}
 			// construct homepage message about myTeam's latest match
@@ -111,8 +125,8 @@ function getFootballData(team) {
 			} else {
 				result = ["Draw", "drawing"];
 			}
-			$("#homeSportHeader").html(`${result[0]} for ${myTeam}`);
-			$("#homeSportText").html(`In their latest match on ${convertDate(matchData[1])}, ${myTeam} played ${opponent} ${homeOrAway}, ${result[1]} ${myGoals}&ndash;${oppGoals}.`);
+			$("#homeSportHeader").html(`${result[0]} for ${displayName(myTeam, shortForm = true)}`);
+			$("#homeSportText").html(`In their latest match on ${convertDate(matchData[1])}, ${displayName(myTeam)} played ${displayName(opponent)} ${homeOrAway}, ${result[1]} ${myGoals}&ndash;${oppGoals}.`);
 		},
 		error: function (error) {
 			console.log(error);
@@ -130,5 +144,15 @@ function convertDate(ddmmyyDate) {
 		return day + " " + months[parseInt(dateArray[1]) - 1] + " " + "20" + dateArray[2];
 	} else {
 		throw `INVALID DATE INPUT: ${ddmmyyDate}`;
+	}
+}
+
+// function to convert team name into display form (identical to base form except for Inter Milan and A.C. Milan)
+function displayName(team, shortForm = false) {
+	var displayTeams = {"Inter": "Inter Milan", "Milan": "A.C. Milan"}
+	if (!shortForm && (team == "Inter" || team == "Milan")) {
+		return displayTeams[team];
+	} else {
+		return team;
 	}
 }

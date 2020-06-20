@@ -15,10 +15,7 @@ function loadPage() {
 			if (i <= 6) {
 				// Show plus sign to add photos in first available slot
 				$("#photo" + i).empty();
-				$("#photo" + i).append("<img id='uploadPlus' class='centre-img pointer' src='Assets/Plus_button.png' alt='Add photo' width='100px' onclick='uploadFile();'/>");
-				//$("#photo" + i).append("<form id='uploadForm' action='/uploadPhoto' method='GET'>");
-				//$("#photo" + i).append("<input type='file' onchange='upload()'>");
-				//$("#photo" + i).append("</form>");
+				$("#photo" + i).append("<img id='plusToUpload' class='centre-img' src='Assets/Plus_button.png' alt='Add photo' width='100px'/>");
 				i += 1;
 			}
 			while (i <= 6) {
@@ -33,15 +30,12 @@ function loadPage() {
 // page starter
 loadPage();
 
-// function to add a photo, activated by clicking plus sign
-function uploadFile() {
-	$.ajax({
-		url: "/uploadPhoto",
-		complete: function() {
-			loadPage();
-		}
-	});
-}
+// function to trigger upload function of file-input when plus sign clicked
+$("#plusToUpload").on("click", function() {
+	console.log("TRIGGER FILE INPUT");
+    $("#file-input").trigger("click");
+});
+
 // function to handle photo upload, activated by clicking plus sign
 function upload() {
 	$("#uploadForm").submit();

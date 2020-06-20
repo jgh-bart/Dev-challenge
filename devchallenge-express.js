@@ -1,6 +1,6 @@
 var express      = require("express");
 var session      = require("express-session");
-var fileDialog   = require("file-dialog");
+var formidable   = require("formidable");
 var fs           = require("fs")
 var MongoClient  = require("mongodb").MongoClient;
 var imgFunctions = require("./Code/imgFunctions.js");
@@ -77,6 +77,7 @@ async function queryMongoDB(req, res, queryType, queryArguments) {
 			case "setData":
 				// identify document by username from session data, set the field required
 				await client.db("dev-challenge-db").collection("dc-users").findOneAndUpdate({username: req.session.user.username}, {$set:queryArguments});
+				res.end();
 				break;
 		}
 	} catch(err) {
@@ -85,7 +86,7 @@ async function queryMongoDB(req, res, queryType, queryArguments) {
 		await client.close();
 	}
 }
-// function to log-in
+// function to log in and redirect to homepage
 function loginSession(req, res, user) {
 	req.session.loggedin = true;
 	req.session.user = user;
@@ -171,16 +172,55 @@ app.get("/getPhotos", function(req, res) {
 	});
 });
 // route to upload user image
-app.get("/uploadPhoto", function(req, res) {
-	console.log('UPLOAD');
-	//fileDialog({ accept: 'image/*' }).then(function(file) {
-		//console.log(file[0]);
-		//imgFunctions.uploadImage(file[0], "Images/" + req.session.user.username + file[0]);
-	//});
+app.post("/uploadPhoto", function(req, res) {
+	var uploadPromise = new Promise(function(resolve, reject) {
+		var form = new formidable.IncomingForm();
+		form.parse(req, function (err, fields, files) {
+			console.log('TYPE', files.filetoupload.type);
+			if (files.filetoupload.type.split("/")[0] == "image") {
+				var oldpath = files.filetoupload.path;
+				var destinationDirectory = __dirname + "/Images/" + req.session.user.username;
+				// New filename: numbered one higher than the last file in the destination directory
+				var newFilename;
+				var filenamePromise = new Promise(function(resolve, reject) {
+					fs.readdir(destinationDirectory, function(err, files) {
+						if (err) reject (err);
+						newFilename = String(parseInt(files[files.length - 1].split(".")[0]) + 1).padStart(5, "0");
+						resolve();
+					});
+				});
+				filenamePromise.then(function() {
+					var extension = files.filetoupload.name.split(".")[files.filetoupload.name.split(".").length - 1];
+					var newpath = destinationDirectory + "/" + newFilename + "." + extension;
+					// Read file
+					fs.readFile(oldpath, function (err, data) {
+						if (err) throw err;
+						console.log('File read:', oldpath);
+						// Write file to new location
+						fs.writeFile(newpath, data, function (err) {
+							if (err) throw err;
+							console.log('File written:', newpath);
+						});
+						// Delete the file's temporary location
+						fs.unlink(oldpath, function (err) {
+							if (err) throw err;
+							console.log('File deleted:', oldpath);
+							resolve();
+						});
+					});
+				});
+			} else {
+				throw `${files.filetoupload.type} is not a permitted filetype`;
+			}
+		});
+	});
+	// promise to upload photo
+	uploadPromise.then(function() {
+		res.redirect("/06-photos");
+	});
 });
 // route to delete user image
 app.get("/deletePhoto", function(req, res) {
-	var fileToDelete = req.query.id;
 	var directoryPath = __dirname + "/Images/" + req.session.user.username;
 	// promise to delete photo
 	var deletePromise = new Promise(function(resolve, reject) {
