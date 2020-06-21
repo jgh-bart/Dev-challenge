@@ -182,7 +182,11 @@ app.post("/uploadPhoto", function(req, res) {
 				var filenamePromise = new Promise(function(resolve, reject) {
 					fs.readdir(destinationDirectory, function(err, files) {
 						if (err) reject (err);
-						newFilename = String(parseInt(files[files.length - 1].split(".")[0]) + 1).padStart(5, "0");
+						if (files.length == 0) {
+							newFilename = "00001";
+						} else {
+							newFilename = String(parseInt(files[files.length - 1].split(".")[0]) + 1).padStart(5, "0");
+						}
 						resolve();
 					});
 				});
