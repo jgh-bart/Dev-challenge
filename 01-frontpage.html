@@ -56,24 +56,6 @@
 			</span>
 		</p>
 
-		<script type="text/javascript">
-			var username;
-			// function to show sign-up form (activated by clicking text "Sign up")
-			function signUp() {
-				$("#signInDisplay").attr("style","display: none");
-				$("#signUpDisplay").attr("style","display: block");
-				$("#loginSwitchIntro").html("Already registered?");
-				$("#loginSwitchLink").html("Log in");
-				$("#loginSwitchLink").attr("onclick","signIn();");
-			}
-			// function to show sign-in form (activated by clicking text "Log in")
-			function signIn() {
-				$("#signInDisplay").attr("style","display: block");
-				$("#signUpDisplay").attr("style","display: none");
-				$("#loginSwitchIntro").html("New to the challenge?");
-				$("#loginSwitchLink").html("Sign up");
-				$("#loginSwitchLink").attr("onclick","signUp();");
-			}
-		</script>
+		<script src="Code/js01-frontpage.js"></script>
 	</body>
 </html>

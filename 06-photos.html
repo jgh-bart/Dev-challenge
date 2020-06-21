@@ -17,9 +17,8 @@
 		<h1 class="white text-center">Photos</h1>
 		<div>
 			<!-- photo upload form -->
-			<form action="/uploadPhoto" method="post" enctype="multipart/form-data">
-				<input type="file" name="filetoupload"><br>
-				<input type="submit">
+			<form id="uploadForm" action="/uploadPhoto" method="post" enctype="multipart/form-data" onchange="upload();">
+				<input id="uploadInput" type="file" name="filetoupload">
 			</form>
 		</div>
 		<!-- photo icons -->

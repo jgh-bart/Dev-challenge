@@ -30,13 +30,13 @@ function loadPage() {
 // page starter
 loadPage();
 
-// function to trigger upload function of file-input when plus sign clicked
+// function to trigger upload input when plus sign clicked
 $("#plusToUpload").on("click", function() {
 	console.log("TRIGGER FILE INPUT");
-    $("#file-input").trigger("click");
+    $("#uploadInput").trigger("click");
 });
 
-// function to handle photo upload, activated by clicking plus sign
+// function to submit the photo upload form
 function upload() {
 	$("#uploadForm").submit();
 }

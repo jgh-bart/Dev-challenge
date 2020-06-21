@@ -34,15 +34,14 @@ async function queryMongoDB(req, res, queryType, queryArguments) {
 				var password = queryArguments.password
 				// count entries matching username and password in database
 				var result = await client.db("dev-challenge-db").collection("dc-users").find({username: username, password: password});
-				var resultArray = await result.toArray()
+				var resultArray = await result.toArray();
 				if (resultArray.length > 0) {
-					var user = resultArray[0]
+					var user = resultArray[0];
 					console.log("User found:", user.username, ", logging in");
 					loginSession(req, res, user);
 				} else {
-					console.log("user/password not found");
 					// redirect unsuccessful log-in to login page
-					res.redirect("/");
+					res.redirect("/?login=failed");
 				}
 				break;
 			case "register":
@@ -68,9 +67,8 @@ async function queryMongoDB(req, res, queryType, queryArguments) {
 						if (err) throw err;
 					});
 				} else {
-					console.log("Username or email already registered");
 					// redirect unsuccessful registration to login page
-					res.redirect("/");
+					res.redirect("/?registration=already_exists");
 				}
 				break;
 			case "setData":
@@ -110,11 +108,11 @@ app.post("/register", function(req, res) {
 	password1 = req.body.password;
 	password2 = req.body.confirmPassword;
 	if (!email.match(/.+@.+\.[a-z]+(\.[a-z]{2})?/)) {
-		console.log("Email address not valid");
-		res.redirect("/");
+		res.redirect("/?registration=invalid_email");
 	} else if (password1 != password2) {
-		console.log("Passwords do not match");
-		res.redirect("/");
+		res.redirect("/?registration=passwords_unmatched");
+	} else if (password1.length < 5) {
+		res.redirect("/?registration=password_invalid");
 	} else {
 		queryMongoDB(req, res, "register", {username: username, password: password1, email: email});
 	}
