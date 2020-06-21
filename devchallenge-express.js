@@ -98,7 +98,7 @@ app.post("/login", function(req, res) {
 		queryMongoDB(req, res, "login", {username: username, password: password});
 	} else {
 		// redirect to log-in page if username or password input blank
-		res.redirect("/");
+		res.redirect("/?login=blank");
 	}
 });
 // route to register

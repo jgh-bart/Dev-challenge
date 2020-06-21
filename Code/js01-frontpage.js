@@ -2,7 +2,8 @@ var urlParams = new URLSearchParams(window.location.search);
 
 // respond to URL query with alert
 if (urlParams.has("login")) {
-	alertMessages = {"failed": "This user/password combination was not recognised."};
+	alertMessages = {"failed": "This user/password combination was not recognised.",
+	                 "blank": "Please enter your username and password."};
 	alert(alertMessages[urlParams.get("login")]);
 } else if (urlParams.has("registration")) {
 	alertMessages = {"invalid_email": "Please enter a valid email address.",

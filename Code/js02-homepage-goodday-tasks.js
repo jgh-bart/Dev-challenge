@@ -4,7 +4,7 @@ $.ajax({
 	complete: function(data) {
 		// set welcome message
 		$("#welcome").html(`Good day, ${data.responseJSON.username}`);
-		// set task display
+		// set task display to display up to 3 non-empty tasks
 		var tasksToDisplay = [];
 		data.responseJSON.tasks.forEach(function(taskItem) {
 			if (tasksToDisplay.length < 3 && taskItem.task.length != 0) {
