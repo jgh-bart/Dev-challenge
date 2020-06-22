@@ -50,7 +50,9 @@ function enterText(inputIDNumber) {
 	if(keycode == '13') {
 		event.preventDefault(); // prevent page from reloading by default
 		var taskText = $("#task" + inputIDNumber).val();
-		if (taskText.length != 0) {
+		if (taskText.length > 40) {
+			alert("That's a big task! Try a task of 40 or fewer characters.");
+		} else if (taskText.length != 0) {
 			// send to /setUser to update data
 			$.ajax({
 				url: `/setUser?tasks.${inputIDNumber - 1}.task=${taskText}`,
