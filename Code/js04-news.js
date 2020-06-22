@@ -2,7 +2,7 @@
 var corsProxy = "https://cors-anywhere.herokuapp.com/"
 var url = corsProxy + "https://rss.nytimes.com/services/xml/rss/nyt/World.xml";
 
-var newsURL = $(document).ready(accessRSS(url));
+$(document).ready(accessRSS(url));
 
 // function to access a URL and return XML content
 function accessRSS(url) {

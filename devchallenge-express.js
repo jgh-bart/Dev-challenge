@@ -273,10 +273,10 @@ app.listen(3000, function() {
 // function which takes a string and returns JSON for {}, or Boolean for Boolean string, otherwise string
 function parseIfJsonOrBoolean(inputString) {
 	if (inputString[0] == "{" && inputString[inputString.length - 1] == "}") {
-			return JSON.parse(inputString);
-		} else if (inputString == "true" || inputString == "false") {
-			return (inputString == "true");
-		} else {
-			return inputString;
-		}
+		return JSON.parse(inputString);
+	} else if (inputString == "true" || inputString == "false") {
+		return (inputString == "true");
+	} else {
+		return inputString;
+	}
 }
