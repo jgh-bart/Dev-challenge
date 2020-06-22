@@ -15,21 +15,19 @@
 			<a href="/logout" class="devNavButton" alt="Log out">LOG OUT</a>
 		</nav>
 		<h1 class="white text-center">Photos</h1>
-		<div>
-			<!-- photo upload form -->
-			<form id="uploadForm" action="/uploadPhoto" method="post" enctype="multipart/form-data" onchange="upload();">
-				<input id="uploadInput" type="file" name="filetoupload">
-			</form>
-		</div>
+		<!-- photo upload form -->
+		<form id="uploadForm" action="/uploadPhoto" method="post" enctype="multipart/form-data" onchange="upload();" style=>
+			<input id="uploadInput" type="file" name="filetoupload" accept="image/*" style="opacity: 0">
 		<!-- photo icons -->
-		<div class="cards cardHolder">
-			<div id="photo1" class="card photo-icon"></div>
-			<div id="photo2" class="card photo-icon"></div>
-			<div id="photo3" class="card photo-icon"></div>
-			<div id="photo4" class="card photo-icon"></div>
-			<div id="photo5" class="card photo-icon"></div>
-			<div id="photo6" class="card photo-icon"></div>
-		</div>
+			<div class="cards cardHolder">
+				<div id="photo1" class="card photo-icon"></div>
+				<div id="photo2" class="card photo-icon"></div>
+				<div id="photo3" class="card photo-icon"></div>
+				<div id="photo4" class="card photo-icon"></div>
+				<div id="photo5" class="card photo-icon"></div>
+				<div id="photo6" class="card photo-icon"></div>
+			</div>
+		</form>
 		<script src="Code/js06-photos.js"></script>
 	</body>
 </html>

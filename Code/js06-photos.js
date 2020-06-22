@@ -15,7 +15,7 @@ function loadPage() {
 			if (i <= 6) {
 				// Show plus sign to add photos in first available slot
 				$("#photo" + i).empty();
-				$("#photo" + i).append("<img id='plusToUpload' class='centre-img' src='Assets/Plus_button.png' alt='Add photo' width='100px'/>");
+				$("#photo" + i).append("<label for='uploadInput' class='centre-img'><img id='plusToUpload' class='centre-img pointer' src='Assets/Plus_button.png' alt='Add photo' width='100px'/></label>");
 				i += 1;
 			}
 			while (i <= 6) {
@@ -29,12 +29,6 @@ function loadPage() {
 
 // page starter
 loadPage();
-
-// function to trigger upload input when plus sign clicked
-$("#plusToUpload").on("click", function() {
-	console.log("TRIGGER FILE INPUT");
-    $("#uploadInput").trigger("click");
-});
 
 // function to submit the photo upload form
 function upload() {
